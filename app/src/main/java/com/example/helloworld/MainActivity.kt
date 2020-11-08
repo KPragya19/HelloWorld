@@ -1,24 +1,34 @@
- package com.example.helloworld
+ package com.example.restaurantadvisor
 
-
- import android.content.Intent
- import android.os.Bundle
-
- import androidx.appcompat.app.AppCompatActivity
- import kotlinx.android.synthetic.main.activity_main.*
- import kotlinx.android.synthetic.main.activity_main.view.*
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.restaurantadvisor.model.restaurant
+import com.example.restaurantadvisor.view.ViewModel.restrauntViewModel
+import com.example.restaurantadvisor.view.restrauntAdapter
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter:RecyclerView.Adapter<*>
+    private lateinit var viewModel: restrauntViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        recyclerView = findViewById(R.id.myRestrauListView)
+        viewModel = ViewModelProvider(this).get(restrauntViewModel::class.java)
+        viewModel.restrauntListLivedata.observe(this){
+            it?.let {
+                newRestrauList->
+                adapter = restrauntAdapter(newRestrauList)
+                recyclerView.adapter= adapter
+                recyclerView.layoutManager = LinearLayoutManager(this)
+            }
+        }
+         viewModel.populatedata()
 
-        btn.setOnClickListener({
-            val msg = message.text.toString()
-            val intent = Intent(this,Activity2::class.java)
-            intent.putExtra("msg",msg)
-            startActivity(intent)
 
-        })
     }
 }
